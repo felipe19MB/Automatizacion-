@@ -1,0 +1,54 @@
+group 'BaseWebScreenPlay'
+version '1.0'
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'java-library'
+apply plugin: "net.serenity-bdd.serenity-gradle-plugin"
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+def versionSerenity='3.3.2'
+def versionApachePoi='5.2.2'
+def versionApacheCXF='3.4.4'
+def versionCucumber='7.6.0'
+
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "net.serenity-bdd:serenity-gradle-plugin:3.3.2"
+    }
+}
+serenity {
+    testRoot = "bo.com.bga.certificacion.gananet"
+    requirementsBaseDir = "src/test/resources/features"
+}
+dependencies {
+
+    //DEPENDENCIAS DE SERENITY - TECNOLOGIAS WEB
+    implementation 'net.serenity-bdd:serenity-cucumber:3.3.2'
+    implementation group: 'io.cucumber', name: 'datatable', version: "${versionCucumber}"
+    testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: "${versionCucumber}"
+    implementation group: 'net.serenity-bdd', name: 'serenity-screenplay', version: "${versionSerenity}"
+    implementation group: 'net.serenity-bdd', name: 'serenity-screenplay-webdriver', version: "${versionSerenity}"
+    implementation group: 'net.serenity-bdd', name: 'serenity-junit', version: "${versionSerenity}"
+    implementation group: 'net.serenity-bdd', name: 'serenity-core', version: "${versionSerenity}"
+    implementation group: 'net.serenity-bdd', name: 'serenity-report-resources', version: "${versionSerenity}"
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.2'
+    implementation group: 'com.oracle.database.jdbc', name: 'ojdbc8', version: '19.3.0.0'
+    implementation group: 'org.apache.poi', name: 'poi', version: '4.0.1'
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.0'
+}
+
+test {
+    systemProperties = System.properties
+}

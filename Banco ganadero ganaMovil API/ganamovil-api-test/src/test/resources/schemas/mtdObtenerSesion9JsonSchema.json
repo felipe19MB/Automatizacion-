@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "opstatus": {
+      "type": "integer"
+    },
+    "mtdObtenerSesionResponse": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "strHoraFin": {
+              "type": "string"
+            },
+            "dblTCCompra": {
+              "type": "string"
+            },
+            "strEstado": {
+              "type": "string"
+            },
+            "dblTCVenta": {
+              "type": "string"
+            },
+            "strCodImagen": {
+              "type": "string"
+            },
+            "strCanal": {
+              "type": "string"
+            },
+            "strTitulo": {
+              "type": "string"
+            },
+            "strMensaje": {
+              "type": "string"
+            },
+            "strNombre": {
+              "type": "string"
+            },
+            "strMultipago": {
+              "type": "string"
+            },
+            "strHoraInicio": {
+              "type": "string"
+            },
+            "dblLimiteDiario": {
+              "type": "string"
+            },
+            "intCodPersona": {
+              "type": "string"
+            },
+            "strFechaReimpresion": {
+              "type": "string"
+            },
+            "lngNroSecuencia": {
+              "type": "string"
+            },
+            "prdHoraInicio": {
+              "type": "string"
+            },
+            "intCodError": {
+              "type": "string"
+            },
+            "strFechaPassword": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "strHoraFin",
+            "dblTCCompra",
+            "strEstado",
+            "dblTCVenta",
+            "strCodImagen",
+            "strCanal",
+            "strTitulo",
+            "strMensaje",
+            "strNombre",
+            "strMultipago",
+            "strHoraInicio",
+            "dblLimiteDiario",
+            "intCodPersona",
+            "strFechaReimpresion",
+            "lngNroSecuencia",
+            "prdHoraInicio",
+            "intCodError",
+            "strFechaPassword"
+          ]
+        }
+      ]
+    },
+    "httpStatusCode": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "opstatus",
+    "mtdObtenerSesionResponse",
+    "httpStatusCode"
+  ]
+}

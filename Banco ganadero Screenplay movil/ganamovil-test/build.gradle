@@ -1,0 +1,57 @@
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+defaultTasks 'clean', 'test', 'aggregate'
+
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("net.serenity-bdd:serenity-gradle-plugin:2.0.89")
+    }
+
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'net.serenity-bdd.aggregator'
+apply plugin: 'checkstyle'
+
+
+dependencies {
+    implementation group: 'io.appium', name: 'java-client', version: '7.3.0'
+    implementation group: 'net.serenity-bdd', name: 'serenity-core', version: '2.0.89'
+    implementation group: 'net.serenity-bdd', name: 'serenity-junit', version: '2.0.89'
+    implementation group: 'net.serenity-bdd', name: 'serenity-cucumber', version: '1.9.48'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '1.7.0'
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+    implementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: '2.0.89'
+    implementation group: 'log4j', name: 'log4j', version: '1.2.17'
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.1'
+    implementation group: 'org.apache.poi', name: 'poi', version: '4.1.1'
+    implementation group: 'io.appium', name: 'java-client', version: '7.3.0'
+    implementation group: 'io.cucumber', name: 'cucumber-java', version: '2.4.0'
+    runtimeOnly fileTree(dir: 'src/test/resources/driver', includes: ['*.jar'])
+}
+
+checkstyle {
+    toolVersion = '8.11'
+    configFile = file("${rootProject.rootDir}/config/checkstyle/checkstyle.xml")
+}
+
+test {
+    systemProperty "cucumber.options", System.properties.getProperty("cucumber.options")
+}
+
+gradle.startParameter.continueOnFailure = true
+
+test.finalizedBy(aggregate)

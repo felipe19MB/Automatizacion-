@@ -1,0 +1,60 @@
+plugins {
+    id "net.serenity-bdd.serenity-gradle-plugin" version "3.5.0"
+    id 'java'
+    id 'idea'
+}
+
+ext {
+    serenityCoreVersion = '3.5.0'
+    appiumVersion = '8.0.0'
+    junitVersion = '5.8.2'
+    assertJVersion = '3.24.0'
+    logbackVersion = '1.2.10'
+    slf4jVersion='2.0.6'
+    versionCucumber='7.6.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+defaultTasks 'clean','test','aggregate'
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+dependencies {
+    implementation "net.serenity-bdd:serenity-cucumber:${serenityCoreVersion}"
+    implementation group: 'io.cucumber', name: 'datatable', version: "${versionCucumber}"
+    testImplementation "net.serenity-bdd:serenity-ensure:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-core:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-junit:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-screenplay:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-screenplay-webdriver:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-cucumber:${serenityCoreVersion}",
+            "io.appium:java-client:${appiumVersion}",
+            "org.junit.jupiter:junit-jupiter-api:${junitVersion}",
+            "org.assertj:assertj-core:${assertJVersion}",
+            "org.slf4j:slf4j-simple:${slf4jVersion}"
+    testImplementation 'junit:junit:4.13.1'
+    "ch.qos.logback:logback-classic:${logbackVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    implementation 'com.oracle.database.jdbc:ojdbc10:19.18.0.0'
+    implementation group: 'org.apache.poi', name: 'poi', version: '4.0.1'
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.0'
+    implementation "net.serenity-bdd:serenity-screenplay-rest:${serenityCoreVersion}"
+    implementation "net.serenity-bdd:serenity-rest-assured:${serenityCoreVersion}"
+
+
+}
+test {
+    useJUnit {
+        include "**/*";
+        gradle.startParameter.continueOnFailure = true
+        testLogging.showStandardStreams = true
+        systemProperties System.getProperties()
+        systemProperty "cucumber.filter.tags", System.getProperty("cucumber.filter.tags")
+    }
+}
+
+test.finalizedBy(aggregate)

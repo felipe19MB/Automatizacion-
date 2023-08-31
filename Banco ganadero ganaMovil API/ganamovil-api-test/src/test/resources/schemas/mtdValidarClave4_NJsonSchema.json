@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "mtdValidarClave4Response": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "strNombreUsuario": {
+              "type": "string"
+            },
+            "intHabilitarActualizarDatos": {
+              "type": "string"
+            },
+            "intNotificacion": {
+              "type": "string"
+            },
+            "intEventoId": {
+              "type": "string"
+            },
+            "strUltimoAcceso": {
+              "type": "string"
+            },
+            "intCodError": {
+              "type": "string"
+            },
+            "intMuestraPopup": {
+              "type": "string"
+            },
+            "lstServiciosEstado": {
+              "type": "array",
+              "items": {}
+            },
+            "strTitulo": {
+              "type": "string"
+            },
+            "strNroSesion": {
+              "type": "string"
+            },
+            "intBuroPendiente": {
+              "type": "string"
+            },
+            "strMensaje": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "strNombreUsuario",
+            "intHabilitarActualizarDatos",
+            "intNotificacion",
+            "intEventoId",
+            "strUltimoAcceso",
+            "intCodError",
+            "intMuestraPopup",
+            "lstServiciosEstado",
+            "strTitulo",
+            "strNroSesion",
+            "intBuroPendiente",
+            "strMensaje"
+          ]
+        }
+      ]
+    },
+    "opstatus": {
+      "type": "integer"
+    },
+    "httpStatusCode": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "mtdValidarClave4Response",
+    "opstatus",
+    "httpStatusCode"
+  ]
+}

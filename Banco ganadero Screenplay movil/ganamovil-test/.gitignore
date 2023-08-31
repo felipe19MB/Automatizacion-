@@ -1,0 +1,23 @@
+# Ignore Gradle project-specific cache directory
+.gradle
+gradle
+# Ignore Gradle build output directory
+build
+
+# Ignorar todas lso reportes de Serenity
+target/
+
+#IDE metadata
+**.idea/**
+
+# Serenity Configurations
+serenity.properties
+
+# Ignora archivos que se generan cuando se configura el proyecto gradle
+gradlew
+gradlew.bat
+
+
+# Ingora RunnerTags
+RunnerTags.java
+RunnerPersonalizado.java

@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "codigoError": {
+      "type": "string"
+    },
+    "opstatus": {
+      "type": "integer"
+    },
+    "mensaje": {
+      "type": "string"
+    },
+    "httpStatusCode": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "codigoError",
+    "opstatus",
+    "mensaje",
+    "httpStatusCode"
+  ]
+}

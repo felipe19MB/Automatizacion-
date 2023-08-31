@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "opstatus": {
+      "type": "integer"
+    },
+    "mtdIniciarSolicitudEnrolamientoResponse": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "intUsuarioXCanal": {
+              "type": "string"
+            },
+            "intCodError": {
+              "type": "string"
+            },
+            "strMensaje": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "intUsuarioXCanal",
+            "intCodError",
+            "strMensaje"
+          ]
+        }
+      ]
+    },
+    "httpStatusCode": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "opstatus",
+    "mtdIniciarSolicitudEnrolamientoResponse",
+    "httpStatusCode"
+  ]
+}

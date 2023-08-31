@@ -1,0 +1,80 @@
+pipeline {
+	environment {
+        sourceCodeURL = "git@gitlab.bg.com.bo:desarrollo/qa/app-web/gananet/v4/pruebas-automatizadas.git" // Git Codigo Fuente
+    }
+	tools {
+        gradle "gradle"
+    }
+    agent {
+        node {
+            label 'Windows-builder'
+        }
+    }
+
+    options {
+        buildDiscarder logRotator(
+                    daysToKeepStr: '16',
+                    numToKeepStr: '10'
+            )
+    }
+
+    stages {
+
+        stage('Cleanup Workspace') {
+            steps {
+                cleanWs()
+                bat """
+                echo "Cleaned Up Workspace For Project"
+                """
+            }
+        }
+
+        stage('Code Checkout') {
+            steps {
+                script {
+                    checkout([
+                        $class: "GitSCM", 
+                        branches: [[ name: "develop" ]],
+                        userRemoteConfigs: [[ credentialsId: "gitlab", url: "${sourceCodeURL}" ]]
+                    ])
+				}
+            }
+        }
+
+        stage('Setup parameters') {
+            steps {
+             script {
+                 properties([
+                        parameters([
+                            string(
+                                defaultValue: '@smoketest', 
+                                name: 'test-values', 
+                                trim: true),
+                          ])
+                      ])
+                 }
+             }
+        }
+
+        stage('Run tests') {
+            steps {
+              script {
+                    bat 'gradle clean test -Dtest.single="%test-values%" aggregate'
+               }
+            }
+        }
+    }
+    post { 
+        always {
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'build\\reports\\tests\\test',
+                reportFiles: 'index.html',
+                reportName: 'GanaNet-UI-Test',
+                reportTitles: ''
+            ])
+        }
+    }
+}

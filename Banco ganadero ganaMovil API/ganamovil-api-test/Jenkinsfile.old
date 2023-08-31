@@ -1,0 +1,120 @@
+#!groovy
+
+import java.text.SimpleDateFormat
+
+def dateFormat = new SimpleDateFormat("yyyyMMddHHmm")
+def date = new Date()
+def timestamp = dateFormat.format(date).toString()
+
+pipeline {
+  agent any
+  environment {
+    D_WORKSPACE = "D:/jenkinsws"
+    D_DIR = "${D_WORKSPACE}/serenity_${timestamp}"
+  }
+
+  stages {
+
+    stage('Obtener Fuentes') {
+
+      steps {
+        dir(D_WORKSPACE) {
+          checkout([$class: 'GitSCM', branches: [
+              [name: "develop"]
+            ],
+            doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [
+              [credentialsId: "d0141c1e-8393-40fe-b23f-31511ee7a4f8", url: "https://gitlab.bg.com.bo/desarrollo/qa/appmovil/ganamovil/v1/ganamovil-api-test.git"]
+            ]
+          ])
+        }
+      }
+    }
+
+    stage('Ejecutar Pruebas') {
+      steps {
+        dir(D_WORKSPACE) {
+          script {
+            try {
+              //bat("gradle clean test -Dcucumber.options=\"--tags ${params.tagName}\" aggregate")
+              //bat("gradle clean test -PcucumberArgs=\"--tags ${params.tagName}\" aggregate")
+              //bat("gradle clean test aggregate --info")
+              bat("gradle clean test --tests *${params.Runner}* -Dtags=\"@${params.tagName}\" aggregate")
+              echo 'Test Ejecutados sin Fallo'
+              currentBuild.result = 'SUCCESS'
+            } catch (ex) {
+              echo 'Test Ejecutados con Fallo'
+              currentBuild.result = 'UNSTABLE'
+            }
+          }
+        }
+      }
+    }
+
+    stage('Copiar archivo a publicar en ZephyrScale') {
+      steps {
+          bat "xcopy \"${D_WORKSPACE}\\target\\cucumber-reports\\\" \"${WORKSPACE}\\src\\\" /E /Y"
+      }
+    }
+
+    stage('Descargar Features de ZephyrJira')
+      {
+        steps {
+            downloadFeatureFiles serverAddress: 'https://acelerabga.atlassian.net',
+                projectKey: 'TEST',
+                targetPath:'${WORKSPACE}/src/test/resources/features'
+        }
+      }
+
+
+    stage('Publicar Resultados en ZephyrScale') {
+      steps {
+        script {
+          def keyProject = "TEST"
+          def name = "sda"
+          def description = "s"
+          def jiraProjectVersion = "1.0"
+          def filePath="src/*.json"
+          publishTestResults serverAddress: 'https://acelerabga.atlassian.net',
+            projectKey: keyProject,
+            format: 'Cucumber',
+            filePath: filePath,
+            autoCreateTestCases: true,
+            customTestCycle: [
+              name: name,
+              description: description,
+              jiraProjectVersion: jiraProjectVersion,
+            ]
+        }
+      }
+    }
+
+    stage('Generar evidencia') {
+      steps {
+        dir(D_WORKSPACE) {
+          script {
+            try {
+              bat " rename \"${D_WORKSPACE}\\target\\site\" serenity_${timestamp}"
+              echo 'Backup de evidencias realizado con exito'
+
+              publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: "${D_WORKSPACE}//serenity_${timestamp}",
+                reportFiles: 'index.html',
+                reportName: 'Evidencias Automatizacion APIs',
+                reportTitles: 'APIs'
+              ])
+              echo 'Reporte Html realizado con exito'
+            } catch (e) {
+              echo 'No se realizo el Backup de evidencias'
+              publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "${WORKSPACE}//target//site//serenity_${timestamp}", reportFiles: 'index.html', reportName: 'Evidencias Automatizacion APIs', reportTitles: params.tagName])
+              echo 'Reporte Html realizado con exito'
+              currentBuild.result = 'SUCCESS'
+            }
+          }
+        }
+      }
+    }
+  }
+}
